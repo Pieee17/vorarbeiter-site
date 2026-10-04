@@ -210,6 +210,35 @@ footer a { text-decoration: none; } footer a:hover { color: var(--ink); }
 .legal .box { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 20px 24px; }
 
 
+/* Gehirn: vernetztes Business */
+.brain-section .wrap { display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 48px; align-items: center; }
+.checks { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 14px; }
+.checks li { position: relative; padding-left: 34px; color: var(--ink-2); font-size: 16px; }
+.checks li::before { content: ""; position: absolute; left: 0; top: 2px; width: 22px; height: 22px; border-radius: 50%; background: var(--sage-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231d2740' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 12 4 4 8-8'/%3E%3C/svg%3E") center / 14px no-repeat; }
+.checks b { color: var(--ink); }
+.brain { position: relative; background: radial-gradient(circle at 50% 50%, var(--paper) 0%, var(--paper) 45%, rgba(255,253,249,0) 72%); border-radius: 32px; }
+.brain svg { width: 100%; height: auto; overflow: visible; }
+.brain .edge { fill: none; stroke: rgba(29, 39, 64, 0.26); stroke-width: 1.4; stroke-dasharray: var(--len); stroke-dashoffset: var(--len); transition: stroke-dashoffset 1.4s var(--ease), stroke 0.3s; }
+.brain .edge.leaf { stroke: rgba(29, 39, 64, 0.16); stroke-width: 1.1; }
+.brain.drawn .edge { stroke-dashoffset: 0; }
+.brain .node { opacity: 0; transition: opacity 0.8s var(--ease); }
+.brain.drawn .node { opacity: 1; }
+.brain .pill { fill: var(--paper); stroke: var(--line); }
+.brain .cat .pill { fill: var(--paper); stroke: rgba(127, 154, 123, 0.45); }
+.brain text { font-family: var(--sans); fill: var(--ink); dominant-baseline: middle; text-anchor: middle; }
+.brain .cat text { font-size: 15px; font-weight: 600; }
+.brain .leafnode text { font-size: 12.5px; fill: var(--ink-2); }
+.brain .core circle.c1 { fill: var(--ink); }
+.brain .core circle.halo { fill: none; stroke: rgba(127, 154, 123, 0.5); transform-origin: 320px 280px; animation: halo 3.6s var(--ease) infinite; }
+.brain .core text { fill: var(--paper); font-family: var(--serif); font-size: 19px; }
+@keyframes halo { from { transform: scale(0.9); opacity: 0.9; } to { transform: scale(1.6); opacity: 0; } }
+.brain .spark { fill: var(--sage); filter: drop-shadow(0 0 6px rgba(127, 154, 123, 0.9)); }
+.brain .group:hover .edge, .brain .group.hot .edge { stroke: var(--sage); }
+.brain .float { animation: bob 6s ease-in-out infinite; }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@media (max-width: 900px) { .brain-section .wrap { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .brain .leafnode, .brain .edge.leaf { display: none; } .brain .cat text { font-size: 19px; } }
+
 /* Anbindungen: drehender Logo-Kreis */
 .integrations .wrap { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 48px; align-items: center; }
 .legend { list-style: none; padding: 0; margin: 28px 0 0; display: flex; gap: 22px; font-size: 14.5px; color: var(--ink-2); }
