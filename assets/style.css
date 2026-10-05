@@ -215,6 +215,44 @@ footer a { text-decoration: none; } footer a:hover { color: var(--ink); }
 .legal .box { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 20px 24px; }
 
 
+/* Ein Chat statt zehn Apps */
+.consolidate { background: var(--paper); border-bottom: 1px solid var(--line); }
+.consolidate-head { max-width: 760px; }
+.merge { display: grid; grid-template-columns: 1fr 64px 1fr; gap: 24px; align-items: center; margin-top: 52px; }
+.merge-side { position: relative; overflow: hidden; background: var(--sand); border: 1px solid var(--line); border-radius: 28px; padding: 26px; min-height: 360px; display: flex; flex-direction: column; }
+.merge-label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.after .merge-label { color: var(--sage); }
+.merge-note { margin: auto 0 0; padding-top: 16px; font-size: 14.5px; color: var(--ink-2); font-weight: 600; }
+.apps { position: relative; flex: 1; min-height: 230px; margin-top: 12px; }
+.apps span { position: absolute; left: calc(var(--x) + 6%); top: var(--y); white-space: nowrap;
+  font-size: 13.5px; font-weight: 600; color: var(--ink-2); background: var(--paper); border: 1px solid var(--line);
+  padding: 9px 13px; border-radius: 12px; box-shadow: 0 10px 22px -16px rgba(29, 39, 64, 0.5);
+  transform: rotate(var(--r)); transition: transform 1s var(--ease), opacity 1s var(--ease), left 1s var(--ease), top 1s var(--ease); }
+.merge.merged .apps span { left: 88%; top: 40%; transform: rotate(0) scale(0.5); opacity: 0; }
+.merge.merged .apps span:nth-child(odd) { transition-delay: 0.08s; }
+.merge-arrow svg { width: 48px; stroke: var(--sage); stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.merge-arrow { display: grid; place-items: center; opacity: 0.4; transition: opacity 0.6s 0.6s; }
+.merge.merged .merge-arrow { opacity: 1; }
+.after { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.after .merge-note { color: rgba(255, 253, 249, 0.85); }
+.one-chat { margin-top: 14px; background: var(--paper); color: var(--ink); border-radius: 20px; padding: 16px; transform: scale(0.94); opacity: 0.4; transition: transform 0.9s 0.5s var(--ease), opacity 0.9s 0.5s var(--ease); }
+.merge.merged .one-chat { transform: none; opacity: 1; }
+.one-head { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.one-head .avatar { width: 30px; height: 30px; font-size: 15px; }
+.one-chat ul { list-style: none; padding: 0; margin: 14px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.one-chat li { font-size: 13px; font-weight: 600; padding: 7px 11px; border-radius: 999px; background: var(--sage-soft); color: var(--ink);
+  opacity: 0; transform: translateY(8px); transition: opacity 0.5s var(--ease), transform 0.5s var(--ease); }
+.merge.merged .one-chat li { opacity: 1; transform: none; }
+.pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 52px; }
+.pillars b { display: block; font-size: 18px; margin-bottom: 6px; }
+.pillars p { margin: 0; color: var(--ink-2); font-size: 15.5px; }
+@media (max-width: 900px) {
+  .merge { grid-template-columns: 1fr; }
+  .merge-arrow { transform: rotate(90deg); }
+  .pillars { grid-template-columns: 1fr; }
+  .apps span { font-size: 12.5px; padding: 7px 10px; left: calc(var(--x) * 0.7 + 2%); }
+}
+
 /* Gehirn: vernetztes Business */
 .brain-section .wrap { display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 48px; align-items: center; }
 .checks { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 14px; }

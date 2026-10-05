@@ -197,3 +197,22 @@ new IntersectionObserver(([e], obs) => { if (e.isIntersecting) { play(0); obs.di
     setTimeout(run, 2200);
   }, { threshold: 0.3 }).observe(box);
 })();
+
+// "Ein Chat statt zehn Apps": verstreute Apps fliegen zusammen, der eine Chat füllt sich
+(function merge() {
+  const box = document.getElementById("merge");
+  if (!box) return;
+  box.querySelectorAll(".one-chat li").forEach((li, i) => { li.style.transitionDelay = `${0.9 + i * 0.09}s`; });
+  new IntersectionObserver(([e], obs) => {
+    if (!e.isIntersecting) return;
+    obs.disconnect();
+    if (reduced) { box.classList.add("merged"); return; }
+    // Schleife: 2,5 s verstreut → zusammenfliegen → 5 s stehen lassen → von vorn
+    const cycle = () => {
+      box.classList.remove("merged");
+      setTimeout(() => box.classList.add("merged"), 2500);
+      setTimeout(cycle, 2500 + 5500);
+    };
+    setTimeout(cycle, 400);
+  }, { threshold: 0.45 }).observe(box);
+})();
