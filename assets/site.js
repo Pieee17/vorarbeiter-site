@@ -48,8 +48,9 @@ const scenes = [
   { name: "E-Mail", steps: [
     { who: "me", html: '<span class="fwd">Weitergeleitet · Gruppe Projekt Halle</span>„Brauchen die Freigabe vom Vermieter bis Mittwoch“' },
     { who: "me", html: "Mach eine Mail an Frau Schneider draus, freundlich" },
-    { who: "bot", html: "Entwurf liegt in Gmail ✉️<br><b>Betreff:</b> Freigabe Halle bis Mittwoch<br>Sehr geehrte Frau Schneider, …" },
-    { who: "me", html: "Perfekt, ich schick sie ab" },
+    { who: "bot", html: "E-Mail senden?<br><b>An:</b> Frau Schneider<br><b>Betreff:</b> Freigabe Halle bis Mittwoch<br>Sehr geehrte Frau Schneider, …<div class=\"btns\"><span>✉️ Senden</span><span>❌ Nein</span></div>" },
+    { who: "me", html: "Senden" },
+    { who: "bot", html: "✅ Gesendet an Frau Schneider." },
   ] },
   { name: "Angebot", steps: [
     { who: "me", html: "Mach Max ein Angebot: 3 Aufbereitungen à 289 € und eine Keramikversiegelung" },
