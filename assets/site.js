@@ -18,19 +18,57 @@ new IntersectionObserver(([e], obs) => {
   if (e.isIntersecting) { setTimeout(() => threads.classList.add("sorted"), reduced ? 0 : 700); obs.disconnect(); }
 }, { threshold: 0.4 }).observe(threads);
 
-// Chat-Vorführung
-const script = [
-  { who: "me", html: '<span class="fwd">Weitergeleitet · Ahmed</span><div class="voice"><i></i><span class="wave"></span>1:42</div>' },
-  { who: "me", html: "Fass zusammen und trag den Termin ein" },
-  { who: "bot", html: "Ahmed bietet den X5 für 34.500 € netto an, 68 tkm, Besichtigung Do 14:00 in Stuttgart. Er braucht bis Freitag eine Rückmeldung." },
-  { who: "bot", html: "Termin eintragen?<br><b>Besichtigung X5</b> · Do 14:00<div class=\"btns\"><span>✅ Ja</span><span>❌ Nein</span></div>" },
-  { who: "me", html: "Ja. Und mach Ahmed ein Angebot für die Aufbereitung" },
-  { who: "bot", html: '<div class="file">Angebot_A-2026-014.pdf</div>' },
-  { who: "bot", html: "Erledigt ✅ Soll ich dich Freitag 9 Uhr ans Nachfassen erinnern?" },
+// Chat-Vorführung: mehrere Alltags-Szenarien nacheinander (oder per Klick auswählbar)
+const wave = '<div class="voice"><i></i><span class="wave"></span>1:42</div>';
+const yesNo = (t) => `${t}<div class="btns"><span>✅ Ja</span><span>❌ Nein</span></div>`;
+const scenes = [
+  { name: "Sprachnachricht", steps: [
+    { who: "me", html: `<span class="fwd">Weitergeleitet · Max</span>${wave}` },
+    { who: "me", html: "Fass zusammen und trag den Termin ein" },
+    { who: "bot", html: "Max bietet den X5 für 34.500 € netto an, 68 tkm. Besichtigung Do 14:00 in Stuttgart, Rückmeldung bis Freitag." },
+    { who: "bot", html: yesNo("Termin eintragen?<br><b>Besichtigung X5</b> · Do 14:00") },
+    { who: "me", html: "Ja" },
+    { who: "bot", html: "Steht im Kalender ✅" },
+  ] },
+  { name: "Nachfassen", steps: [
+    { who: "me", html: "Erinner mich Freitag 10 Uhr, bei Max wegen dem Angebot nachzuhaken" },
+    { who: "bot", html: "Mach ich ⏰ Freitag, 10:00 – Nachfassen bei Max (Angebot A-2026-014)." },
+    { who: "bot", html: "<b>⏰ Erinnerung</b><br>Bei Max wegen dem Angebot nachhaken. Soll ich dir eine kurze Nachricht vorformulieren?" },
+    { who: "me", html: "Ja bitte, locker" },
+    { who: "bot", html: "Hi Max, kurz nachgefragt: Konntest du dir das Angebot schon anschauen? Bei Fragen meld dich gern 🙂" },
+  ] },
+  { name: "PDF prüfen", steps: [
+    { who: "me", html: '<span class="fwd">Weitergeleitet · Großhandel Nord</span><div class="file">Preisliste_Q4.pdf</div>' },
+    { who: "me", html: "Was hat sich gegenüber letztem Mal geändert?" },
+    { who: "bot", html: "3 Änderungen: Versiegelung +8 %, Polsterreiniger −5 %, Mindestbestellwert jetzt 250 €. Alles andere gleich." },
+    { who: "bot", html: "Soll ich die neuen Preise in deine Lieferanten-Tabelle übernehmen?" },
+    { who: "me", html: "Ja" },
+    { who: "bot", html: "Erledigt ✅ Tabelle aktualisiert." },
+  ] },
+  { name: "E-Mail", steps: [
+    { who: "me", html: '<span class="fwd">Weitergeleitet · Gruppe Projekt Halle</span>„Brauchen die Freigabe vom Vermieter bis Mittwoch“' },
+    { who: "me", html: "Mach eine Mail an Frau Schneider draus, freundlich" },
+    { who: "bot", html: "Entwurf liegt in Gmail ✉️<br><b>Betreff:</b> Freigabe Halle bis Mittwoch<br>Sehr geehrte Frau Schneider, …" },
+    { who: "me", html: "Perfekt, ich schick sie ab" },
+  ] },
+  { name: "Angebot", steps: [
+    { who: "me", html: "Mach Max ein Angebot: 3 Aufbereitungen à 289 € und eine Keramikversiegelung" },
+    { who: "bot", html: '<div class="file">Angebot_A-2026-015.pdf</div>' },
+    { who: "bot", html: "Netto 1.516,50 €, brutto 1.804,64 € – in deinem Briefkopf. Soll ich dich in 5 Tagen ans Nachfassen erinnern?" },
+  ] },
 ];
 
 const chat = document.getElementById("chat");
-const wait = (ms) => new Promise((r) => setTimeout(r, reduced ? 0 : ms));
+const tabs = document.getElementById("scenes");
+let current = 0, run = 0;
+const wait = (ms, id) => new Promise((r, x) => setTimeout(() => (id === run ? r() : x()), reduced ? 0 : ms));
+
+scenes.forEach((sc, i) => {
+  const b = document.createElement("button");
+  b.type = "button"; b.textContent = sc.name; b.setAttribute("role", "tab");
+  b.addEventListener("click", () => play(i));
+  tabs.appendChild(b);
+});
 
 function bubble(who, html) {
   const el = document.createElement("div");
@@ -41,24 +79,28 @@ function bubble(who, html) {
   return el;
 }
 
-async function play() {
-  for (;;) {
-    chat.innerHTML = "";
-    for (const step of script) {
+async function play(index) {
+  const id = ++run;
+  current = index;
+  [...tabs.children].forEach((b, i) => b.setAttribute("aria-selected", String(i === index)));
+  chat.innerHTML = "";
+  try {
+    for (const step of scenes[index].steps) {
       if (step.who === "bot") {
         const t = bubble("bot", '<span class="typing"><b></b><b></b><b></b></span>');
-        await wait(900);
+        await wait(900, id);
         t.remove();
-      } else await wait(700);
+      } else await wait(650, id);
       bubble(step.who, step.html);
-      await wait(1300);
+      await wait(1400, id);
     }
     if (reduced) return;
-    await wait(3500);
-  }
+    await wait(2800, id);
+    play((current + 1) % scenes.length);
+  } catch { /* durch Klick auf ein anderes Szenario abgelöst */ }
 }
 
-new IntersectionObserver(([e], obs) => { if (e.isIntersecting) { play(); obs.disconnect(); } }, { threshold: 0.3 })
+new IntersectionObserver(([e], obs) => { if (e.isIntersecting) { play(0); obs.disconnect(); } }, { threshold: 0.3 })
   .observe(chat);
 
 // Gehirn-Grafik: Mitte = Business, Ring = Bereiche, außen = Beispiele. Lichtpunkte bringen "neue Infos" zur Mitte.
@@ -68,14 +110,14 @@ new IntersectionObserver(([e], obs) => { if (e.isIntersecting) { play(); obs.dis
   const NS = "http://www.w3.org/2000/svg";
   const C = { x: 320, y: 280 };
   const groups = [
-    { name: "Kunden", leaves: ["Ahmed", "Autohaus Weber"] },
+    { name: "Kunden", leaves: ["Max", "Autohaus Muster"] },
     { name: "Projekte", leaves: ["BMW X5", "Halle Köln"] },
     { name: "Angebote", leaves: ["A-2026-014"] },
     { name: "Termine", leaves: ["Besichtigung Do 14:00"] },
     { name: "Absprachen", leaves: ["34.500 € netto"] },
     { name: "Sprachnachrichten", leaves: ["„Passt dir 14 Uhr?“"] },
     { name: "Dokumente", leaves: ["Preisliste Q4.pdf", "8 Fotos"] },
-    { name: "Lieferanten", leaves: ["Plock GmbH"] },
+    { name: "Lieferanten", leaves: ["Großhandel Nord"] },
   ];
   const el = (tag, attrs, parent) => {
     const e = document.createElementNS(NS, tag);

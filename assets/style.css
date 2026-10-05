@@ -145,6 +145,11 @@ h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4.4vw, 
 .typing b:nth-child(2) { animation-delay: 0.2s; } .typing b:nth-child(3) { animation-delay: 0.4s; }
 @keyframes blink { 0%, 80%, 100% { opacity: 0.25; } 40% { opacity: 1; } }
 
+.scenes { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 22px; }
+.scenes button { font: 600 13px var(--sans); color: var(--ink-2); background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; cursor: pointer; transition: all 0.25s var(--ease); }
+.scenes button:hover { color: var(--ink); }
+.scenes button[aria-selected="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
 .steps-list { list-style: none; padding: 0; margin: 32px 0 0; display: grid; gap: 18px; }
 .steps-list li { display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: start; }
 .steps-list .num { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); display: grid; place-items: center; font-family: var(--serif); font-size: 19px; }
@@ -274,7 +279,7 @@ footer a { text-decoration: none; } footer a:hover { color: var(--ink); }
 
 @media (max-width: 900px) {
   .hero .wrap, .chaos .wrap, .demo .wrap { grid-template-columns: 1fr; }
-  .demo .phone { order: 2; }
+  .demo .phone-col { order: 2; }
   .grid { grid-template-columns: 1fr; }
   .trust { padding: 44px 26px; border-radius: 26px; }
   .trust-grid { grid-template-columns: 1fr; }
